@@ -13,42 +13,27 @@ export default function App() {
     {id: 300, title: "Her"},
   ]);
 
-  console.log("initial: ", draggableRowsList);
-  const getRowPosition = id => draggableRowsList.findIndex(row =>  row.id === id)
-;
-
+  //Gets/sets the final array of row object after the drag and drop operation
   const handleDragEnd = event =>{
-    const {active, over} = event
-    if(active.id === over.id) return;
+    // Get initial and final index of the selected row item
+    const getInitialAndFinalIndex = (draggableRowsList)=>{
+      const {active, over} = event //event object defines the selected row item through active and over keys
+      const activeId = active.id //active key provides the id of selected row item
+      const overId = over.id //over key provides the id of of the row item replaced by selected row item
 
-    setdraggableRowsList(draggableRowsList => {
-      const originalPosition = getRowPosition(active.id)
-      const newPosition = getRowPosition(over.id)
+      //getIndex fetches the index of the id provided
+      const getIndex = id => draggableRowsList.findIndex(row =>  row.id === id);
+      const initialIndex = getIndex(activeId)
+      const finalIndex = getIndex(overId)
 
-      console.log("original Postion",originalPosition);
-      console.log("New Postion",newPosition);
+      return [initialIndex, finalIndex]
+    }
 
-         
-      
-      const finalDraggableRowsList =arrayMove(draggableRowsList, originalPosition, newPosition)
-      
-      /*
-      Abstraction Details: arrayMove
-      
-      arrayMove(array, from, to) {
-        const newArray = array.slice();
-        newArray.splice(to < 0 ? newArray.length + to : to, 0, newArray.splice(from, 1)[0]);
-        return newArray;
-      }
-      */
-      
-      console.log("after", finalDraggableRowsList )
-      return finalDraggableRowsList
-    })
-    
+    const [initialIndex, finalIndex] = getInitialAndFinalIndex(draggableRowsList)
+    const finalDraggableRowsList =arrayMove(draggableRowsList, initialIndex, finalIndex)
+    setdraggableRowsList(finalDraggableRowsList)
+
   }
-
-    // console.log("after",)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
