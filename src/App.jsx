@@ -7,32 +7,31 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
 export default function App() {
 
-  const [tasks, setTasks] = useState([
-    {id: 100,title: "Dont"},
+  const [draggableRowsList, setdraggableRowsList] = useState([
+    {id: 100, title: "Dont"},
     {id: 200, title: "Call"},
     {id: 300, title: "Her"},
   ]);
 
-  console.log("initial: ", tasks);
-  const getTaskPosition = id => tasks.findIndex(task =>  task.id === id)
+  console.log("initial: ", draggableRowsList);
+  const getRowPosition = id => draggableRowsList.findIndex(row =>  row.id === id)
 ;
 
   const handleDragEnd = event =>{
     const {active, over} = event
-    
-
     if(active.id === over.id) return;
 
-    setTasks(tasks => {
-      const originalPosition = getTaskPosition(active.id)
-      const newPosition = getTaskPosition(over.id)
+    setdraggableRowsList(draggableRowsList => {
+      const originalPosition = getRowPosition(active.id)
+      const newPosition = getRowPosition(over.id)
 
       console.log("original Postion",originalPosition);
       console.log("New Postion",newPosition);
 
          
       
-      const temp =arrayMove(tasks, originalPosition, newPosition)
+      const finalDraggableRowsList =arrayMove(draggableRowsList, originalPosition, newPosition)
+      
       /*
       Abstraction Details: arrayMove
       
@@ -43,8 +42,8 @@ export default function App() {
       }
       */
       
-      console.log("after", temp ) 
-      return temp
+      console.log("after", finalDraggableRowsList )
+      return finalDraggableRowsList
     })
     
   }
@@ -64,7 +63,7 @@ export default function App() {
       <h1>Drag and Drop Utility</h1>
 
     <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCorners}>  
-      <Column tasks={tasks}/>
+      <Column draggableRowsList={draggableRowsList}/>
     </DndContext>
 
     </div>
